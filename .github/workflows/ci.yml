@@ -1,0 +1,39 @@
+name: ci
+on: [push, pull_request]
+
+jobs:
+  static:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with: { terraform_version: 1.17.0 }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -r requirements-dev.txt
+      - run: pytest -q tests/test_validate.py
+      - run: terraform fmt -check -recursive
+      - name: validate both environments
+        run: |
+          for env in envs/local envs/aws; do
+            terraform -chdir=$env init -backend=false -input=false >/dev/null
+            terraform -chdir=$env validate
+          done
+
+  localstack:
+    runs-on: ubuntu-latest
+    needs: static
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with: { terraform_version: 1.17.0, terraform_wrapper: false }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -r requirements-dev.txt
+      - run: docker compose up -d
+      - run: timeout 120 bash -c 'until curl -sf localhost:4566/_localstack/health; do sleep 2; done'
+      - run: terraform -chdir=envs/local init -input=false && terraform -chdir=envs/local apply -auto-approve -input=false -no-color
+      - run: pytest -v tests
+      - run: python scripts/demo.py 2025-03-14
+      - if: failure()
+        run: docker compose logs --tail 300

@@ -1,0 +1,54 @@
+Apply complete! Resources: 23 added, 0 changed, 0 destroyed.
+uploaded 5 files to s3://store-sales-landing/incoming/
+
+file                                status        ok  bad  reason
+incoming/S01/sales-2026-10-22.csv   loaded      1200    0  
+incoming/S02/sales-2026-10-22.csv   loaded       800    0  
+incoming/S03/sales-2026-10-22.csv   loaded       950    0  
+incoming/S04/sales-2026-10-22.csv   partial      594    7  
+incoming/S05/export-2026-10-22.csv  rejected       0    0  missing columns: transaction_id, store_id, sold_at, sku, qty, unit_price, payment_method
+all processed in 6.5s
+
+s3://store-sales-lake/
+  curated/sales/business_date=2026-10-22/store_id=S01/sales-2026-10-22-0a02e049.csv.gz   13278 B
+  curated/sales/business_date=2026-10-22/store_id=S02/sales-2026-10-22-412beaa7.csv.gz    9119 B
+  curated/sales/business_date=2026-10-22/store_id=S03/sales-2026-10-22-d5dccc14.csv.gz   10598 B
+  curated/sales/business_date=2026-10-22/store_id=S04/sales-2026-10-22-a15a6f1a.csv.gz    6973 B
+  curated/sales/business_date=2026-10-23/store_id=S01/sales-2026-10-22-0a02e049.csv.gz     374 B
+  curated/sales/business_date=2026-10-23/store_id=S02/sales-2026-10-22-412beaa7.csv.gz     303 B
+  curated/sales/business_date=2026-10-23/store_id=S03/sales-2026-10-22-d5dccc14.csv.gz     329 B
+  curated/sales/business_date=2026-10-23/store_id=S04/sales-2026-10-22-a15a6f1a.csv.gz     266 B
+  quarantine/files/store_id=S05/export-2026-10-22-1537e223.csv                              27 B
+  quarantine/rows/store_id=S04/sales-2026-10-22-a15a6f1a.csv                               823 B
+
+daily report (scheduled run at 2026-10-22T17:10:00Z = 00:10 WIB) -> reports/daily/date=2026-10-22/report.json
+{
+  "stores": [
+    {
+      "store_id": "S01",
+      "transactions": 1187,
+      "units": 2694,
+      "revenue": "344452800"
+    },
+    {
+      "store_id": "S02",
+      "transactions": 791,
+      "units": 1839,
+      "revenue": "243427800"
+    },
+    {
+      "store_id": "S03",
+      "transactions": 940,
+      "units": 2124,
+      "revenue": "275738700"
+    },
+    {
+      "store_id": "S04",
+      "transactions": 587,
+      "units": 1367,
+      "revenue": "176178200"
+    }
+  ],
+  "transactions": 3505,
+  "revenue": "1039797500"
+}

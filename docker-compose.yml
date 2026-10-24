@@ -1,0 +1,11 @@
+services:
+  localstack:
+    # 4.14.0 is the last community release that runs without an auth token.
+    image: localstack/localstack:4.14.0
+    ports:
+      - "127.0.0.1:4566:4566"
+    environment:
+      SERVICES: s3,lambda,dynamodb,sqs,events,iam,logs,sts
+      LAMBDA_KEEPALIVE_MS: "60000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock  # Lambda runs functions in containers
